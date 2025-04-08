@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { deletecookie } from "@/actions/logout"
 import { useRouter } from "next/navigation"
 
@@ -50,6 +49,14 @@ export default function Dashboard() {
   // Estado para el usuario actual
   const router = useRouter()
 
+  const [obst, setObst] = useState(0)
+  function conobst() {
+    fetch("/api/consultarObstaculo")
+      .then((res) => res.json())
+      .then((data) => {
+        setObst(data)
+      })
+  }
   // Modificar el useEffect para incluir el usuario actual en los datos de ejemplo
   useEffect(() => {
     // Simulación de carga de datos
@@ -104,8 +111,10 @@ export default function Dashboard() {
 
       }
     }
-
     loadData()
+    conobst()
+    const interval = setInterval(conobst, 2500);
+    return () => clearInterval(interval);
   }, [])
 
   // Modificar la función handleSwitchChange para incluir el usuario actual
@@ -311,16 +320,16 @@ export default function Dashboard() {
                       <div
                         className={`flex items-center p-3 rounded-lg ${deviceState.estadoobstaculo ? "bg-red-50" : "bg-emerald-50"}`}
                       >
-                        {deviceState.estadoobstaculo ? (
-                          <>
-                            <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="font-medium text-red-700">Obstáculo Encontrado</span>
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="h-5 w-5 text-emerald-500 mr-2" />
-                            <span className="font-medium text-emerald-700">Obstáculo NO Encontrado</span>
-                          </>
+                        {obst == 0 ? (
+                         <>
+                         <CheckCircle className="h-5 w-5 text-emerald-500 mr-2" />
+                         <span className="font-medium text-emerald-700">Obstáculo NO Encontrado</span>
+                       </>
+                        ) : (         
+                           <>
+                           <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+                           <span className="font-medium text-red-700">Obstáculo Encontrado</span>
+                         </>
                         )}
                       </div>
                     </div>
@@ -329,8 +338,8 @@ export default function Dashboard() {
                     <div className="mt-4">
                       <Badge
                         className={`${deviceState.estadosensor
-                            ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
-                            : "bg-slate-100 text-slate-800 hover:bg-slate-100"
+                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
+                          : "bg-slate-100 text-slate-800 hover:bg-slate-100"
                           } 
                           px-3 py-1 text-xs rounded-full`}
                       >
@@ -452,8 +461,8 @@ export default function Dashboard() {
                       <span className="text-slate-700">Estado</span>
                       <Badge
                         className={`${deviceState.estadosensor
-                            ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
-                            : "bg-slate-200 text-slate-800 hover:bg-slate-200"
+                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
+                          : "bg-slate-200 text-slate-800 hover:bg-slate-200"
                           }`}
                       >
                         {deviceState.estadosensor ? "Activo" : "Inactivo"}
@@ -463,8 +472,8 @@ export default function Dashboard() {
                       <span className="text-slate-700">Detección</span>
                       <Badge
                         className={`${deviceState.estadoobstaculo
-                            ? "bg-red-100 text-red-800 hover:bg-red-100"
-                            : "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
+                          ? "bg-red-100 text-red-800 hover:bg-red-100"
+                          : "bg-emerald-100 text-emerald-800 hover:bg-emerald-100"
                           }`}
                       >
                         {deviceState.estadoobstaculo ? "Obstáculo" : "Sin obstáculo"}
