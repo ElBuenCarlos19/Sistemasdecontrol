@@ -6,7 +6,7 @@ export async function GET() {
     // Obtener el último registro de accion_led
     const ledResult = await executeQuery(
       "SELECT estadoled1, estadoled2, estadoled3 FROM accion_led ORDER BY fechahoraregistro DESC LIMIT 1",
-    )
+    ) 
 
     // Obtener el último registro de accion_sensor
     const sensorResult = await executeQuery(
